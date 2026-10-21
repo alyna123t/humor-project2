@@ -84,13 +84,9 @@ export default async function UsersPage() {
 
 export function Avatar({ url, name }: { url: string | null; name: string }) {
   if (url) {
-    // eslint-disable-next-line @next/next/no-img-element
     return (
-      <img
-        src={url}
-        alt={name}
-        className="h-8 w-8 rounded-full object-cover"
-      />
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={url} alt={name} className="h-8 w-8 rounded-full object-cover" />
     );
   }
   const initials = name

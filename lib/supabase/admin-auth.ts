@@ -42,7 +42,8 @@ export async function getAuthState(): Promise<AuthState> {
 
 // Guard for Server Components / pages. Sends logged-out users to /login and lets the
 // layout render the "no access" screen for logged-in non-admins by returning the state.
-export async function requireSuperadmin(): Promise<AuthState> {
+// The return type excludes "anon" because that case always redirects (never returns).
+export async function requireSuperadmin(): Promise<Exclude<AuthState, { status: "anon" }>> {
   const state = await getAuthState();
   if (state.status === "anon") redirect("/login");
   return state;
