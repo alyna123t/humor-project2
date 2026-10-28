@@ -1,7 +1,7 @@
 import { requireSuperadmin } from "@/lib/supabase/admin-auth";
 import { fullName } from "@/lib/types";
 import SignOutButton from "@/app/login/SignOutButton";
-import Nav from "./Nav";
+import AdminShell from "./AdminShell";
 
 export default async function AdminLayout({
   children,
@@ -31,22 +31,8 @@ export default async function AdminLayout({
   const who = fullName(state.profile) || state.profile.email || "Admin";
 
   return (
-    <div className="min-h-screen">
-      <header className="sticky top-0 z-10 border-b border-[var(--border)] bg-[var(--background)]/85 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-          <div className="flex items-center gap-4">
-            <span className="text-base font-bold">
-              Vibes<span className="text-[var(--accent)]">Admin</span>
-            </span>
-            <Nav />
-          </div>
-          <div className="flex items-center gap-3 text-sm">
-            <span className="text-[var(--muted)]">{who}</span>
-            <SignOutButton />
-          </div>
-        </div>
-      </header>
-      <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
-    </div>
+    <AdminShell who={who} signOut={<SignOutButton />}>
+      {children}
+    </AdminShell>
   );
 }
