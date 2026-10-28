@@ -13,11 +13,16 @@ Every route is behind a **Google login wall** and only users with
   engagement distribution, top & most-controversial vibes, most active creators/voters.
 - **AI Media** — full **CRUD** on `vibes` (the AI-generated vibe checks): create, read,
   update, delete.
+- **Images** — **upload** to a Supabase Storage bucket + full **CRUD** on `images`.
 - **Users** — **read** all `profiles` with per-user vibe/vote counts and a detail page.
 - **Ratings** — **read** every `vibe_votes` row (upvotes/downvotes) with aggregates and
   up/down filtering.
+- **Week-7 GenAI observability** — prompt chains, LLM providers/models, generation
+  requests/responses, examples, terms, and sign-up allowlists (see table below).
 
 ## The data (shared with the main app)
+
+Original "NYC Vibes" tables:
 
 | Table | Role |
 |---|---|
@@ -26,11 +31,36 @@ Every route is behind a **Google login wall** and only users with
 | `vibe_votes` | upvotes/downvotes, `vote` ∈ {1, -1} (read) |
 | `restaurants` | referenced for joins/stats (read) |
 
+Week-7 GenAI tables (created by [`supabase/genai.sql`](supabase/genai.sql)):
+
+| Table | Admin capability | Where |
+|---|---|---|
+| `prompt_chains` | read | `/prompt-chains` |
+| `prompt_chain_steps` | read | `/prompt-chains/[id]` |
+| `prompt_chain_mix` | read / **update** | `/prompt-chains/[id]` |
+| `terms` | **CRUD** | `/data/terms` |
+| `generation_requests` | read | `/data/generation_requests` |
+| `ai_generation_examples` | **CRUD** | `/data/ai_generation_examples` |
+| `llm_models` | **CRUD** | `/data/llm_models` |
+| `llm_providers` | **CRUD** | `/data/llm_providers` |
+| `llm_responses` | read | `/data/llm_responses` |
+| `allowed_signup_domains` | **CRUD** | `/data/allowed_signup_domains` |
+| `whitelisted_emails` | **CRUD** | `/data/whitelisted_emails` |
+| `images` | **CRUD** + upload | `/images` |
+
+The eight simple tables share one config-driven engine: [`lib/resources.ts`](lib/resources.ts)
+declares each table's columns/fields/permissions, and the generic pages under
+`app/(admin)/data/[resource]` + actions in `app/(admin)/data/actions.ts` do the rest.
+Prompt chains and images have bespoke pages for their nesting / file-upload needs.
+
 ## Setup
 
-1. **Run the migration.** In Supabase → SQL Editor, run [`supabase/admin.sql`](supabase/admin.sql).
-   It adds `profiles.is_superadmin`, the superadmin RLS policies (which let an admin read
-   *all* rows and do CRUD on vibes), and bootstraps the first admin.
+1. **Run the migrations.** In Supabase → SQL Editor, run
+   [`supabase/admin.sql`](supabase/admin.sql) **then** [`supabase/genai.sql`](supabase/genai.sql).
+   `admin.sql` adds `profiles.is_superadmin`, the superadmin RLS policies for the original
+   tables, and bootstraps the first admin. `genai.sql` creates all the Week-7 GenAI tables
+   + the `images` Storage bucket, locks each to superadmins, and seeds a little demo data.
+   Both are idempotent (safe to re-run).
 2. **Env vars.** Copy `.env.local.example` → `.env.local` and fill in the **same**
    `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` as the main app.
    Only the public anon key is used — security is enforced by RLS + the superadmin check,
