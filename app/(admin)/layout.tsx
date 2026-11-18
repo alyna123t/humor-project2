@@ -1,6 +1,7 @@
 import { requireSuperadmin } from "@/lib/supabase/admin-auth";
 import { fullName } from "@/lib/types";
 import SignOutButton from "@/app/login/SignOutButton";
+import { HOME_URL } from "@/lib/home-url";
 import AdminShell from "./AdminShell";
 
 export default async function AdminLayout({
@@ -21,8 +22,11 @@ export default async function AdminLayout({
           this account isn&apos;t a superadmin. Ask an existing admin to grant access, then
           sign back in.
         </p>
-        <div>
+        <div className="flex items-center gap-3">
           <SignOutButton />
+          <a href={HOME_URL} className="text-sm text-[var(--muted)] hover:text-[var(--foreground)]">
+            &larr; Back to NYC Vibes
+          </a>
         </div>
       </main>
     );

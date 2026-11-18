@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { HOME_URL } from "@/lib/home-url";
 
 // Grouped sidebar nav — replaces the old crammed top bar. Every admin section is
 // reachable here, organized so nothing is "shoved into the top bar". On desktop the
@@ -147,6 +148,9 @@ export default function AdminShell({
             </span>
           </div>
           <div className="flex items-center gap-3 text-sm">
+            <a href={HOME_URL} className="text-[var(--muted)] hover:text-[var(--foreground)]">
+              &larr; NYC Vibes
+            </a>
             <span className="hidden text-[var(--muted)] sm:inline">{who}</span>
             {signOut}
           </div>

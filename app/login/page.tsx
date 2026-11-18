@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getAuthState } from "@/lib/supabase/admin-auth";
+import { HOME_URL } from "@/lib/home-url";
 import GoogleSignInButton from "./GoogleSignInButton";
 import SignOutButton from "./SignOutButton";
 
@@ -20,6 +21,9 @@ export default async function LoginPage({
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-sm flex-col justify-center gap-6 px-4 py-10">
+      <a href={HOME_URL} className="text-sm text-[var(--muted)] hover:text-[var(--foreground)]">
+        &larr; Back to NYC Vibes
+      </a>
       <div>
         <p className="text-sm font-semibold uppercase tracking-wide text-[var(--accent)]">
           Vibes Admin
